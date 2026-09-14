@@ -60,14 +60,9 @@ function Index() {
               </Button>
             </>
           ) : (
-            <>
-              <Button asChild variant="ghost">
-                <Link to="/login">تسجيل الدخول</Link>
-              </Button>
-              <Button asChild className="shadow-elegant">
-                <Link to="/signup">إنشاء حساب</Link>
-              </Button>
-            </>
+            <Button asChild className="shadow-elegant">
+              <Link to="/login">الدخول بحساب Google</Link>
+            </Button>
           )}
         </nav>
       </header>
@@ -103,14 +98,9 @@ function Index() {
               </span>
             </>
           ) : (
-            <>
-              <Button asChild size="lg" className="shadow-glow">
-                <Link to="/signup">ابدأ مجانًا الآن</Link>
-              </Button>
-              <Button asChild size="lg" variant="outline">
-                <Link to="/login">لديّ حساب بالفعل</Link>
-              </Button>
-            </>
+            <Button asChild size="lg" className="shadow-glow">
+              <Link to="/login">ابدأ مجانًا بحساب Google</Link>
+            </Button>
           )}
         </div>
 

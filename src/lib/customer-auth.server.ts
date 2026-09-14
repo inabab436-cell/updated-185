@@ -494,6 +494,62 @@ export async function verifyCustomerOtpAndLogin(
   };
 }
 
+/**
+ * Log a customer in from an already-verified email (Google sign-in).
+ *
+ * Reuses the exact same customer row resolution + session issuing as the OTP
+ * path, so nothing downstream (orders, conversations, memory) changes.
+ */
+export async function loginCustomerWithVerifiedEmail(
+  merchantId: string,
+  rawEmail: string,
+  visitorId?: string | null,
+): Promise<CustomerOtpVerifyResult> {
+  const admin = getSupabaseAdmin();
+  const email = normalizeEmail(rawEmail);
+  if (!email.includes("@")) {
+    return { ok: false, status: "error", message: "البريد الإلكتروني غير صالح." };
+  }
+
+  const customerId = await upsertCustomerByEmail(admin, merchantId, email, visitorId ?? null);
+
+  const token = generateSessionToken();
+  const expiresAt = new Date(Date.now() + SESSION_TTL_MS).toISOString();
+  const userAgent = getRequestHeader("user-agent") ?? null;
+  let ip: string | null = null;
+  try { ip = getRequestIP({ xForwardedFor: true }) ?? null; } catch { ip = null; }
+
+  const { error: sErr } = await admin.from("customer_sessions").insert({
+    merchant_id: merchantId,
+    customer_id: customerId,
+    token_hash: hashSessionToken(token),
+    status: "active",
+    expires_at: expiresAt,
+    user_agent: userAgent,
+    ip,
+  });
+  if (sErr) {
+    return { ok: false, status: "error", message: "تعذّر إنشاء الجلسة." };
+  }
+
+  setCookie(CUSTOMER_COOKIE_NAME, token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
+    path: "/",
+    maxAge: Math.floor(SESSION_TTL_MS / 1000),
+  });
+
+  return {
+    ok: true,
+    status: "verified",
+    message: "تم تسجيل الدخول.",
+    customerId,
+    email,
+  };
+}
+
+
 /** Resolve the current customer session from the httpOnly cookie. */
 export async function getCurrentCustomerSession(): Promise<
   | null

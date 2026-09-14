@@ -14,7 +14,6 @@ import { Route as AwaitingPaymentRouteImport } from './routes/awaiting-payment'
 import { Route as ContactsRouteImport } from './routes/contacts'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as EarningsRouteImport } from './routes/earnings'
-import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ManualEntryRouteImport } from './routes/manual-entry'
 import { Route as MissingInfoRouteImport } from './routes/missing-info'
@@ -23,18 +22,16 @@ import { Route as OrdersRouteImport } from './routes/orders'
 import { Route as PoliciesRouteImport } from './routes/policies'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as PublishedRouteImport } from './routes/published'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ShippingRouteImport } from './routes/shipping'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as ApiChatAiRouteImport } from './routes/api/chat-ai'
 import { Route as ApiVisitorRouteImport } from './routes/api/visitor'
+import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as CSlugRouteImport } from './routes/c.$slug'
 import { Route as ChatSlugRouteImport } from './routes/chat.$slug'
 import { Route as ConversationIdRouteImport } from './routes/conversation.$id'
 import { Route as SettingsNotificationsRouteImport } from './routes/settings.notifications'
 import { Route as SettingsPaymentMethodsRouteImport } from './routes/settings.payment-methods'
-import { Route as SignupIndexRouteImport } from './routes/signup.index'
-import { Route as SignupVerifyRouteImport } from './routes/signup.verify'
 import { Route as CSlugIndexRouteImport } from './routes/c.$slug.index'
 import { Route as CSlugAccountRouteImport } from './routes/c.$slug.account'
 
@@ -61,11 +58,6 @@ const DashboardRoute = DashboardRouteImport.update({
 const EarningsRoute = EarningsRouteImport.update({
   id: '/earnings',
   path: '/earnings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
-  id: '/forgot-password',
-  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -108,11 +100,6 @@ const PublishedRoute = PublishedRouteImport.update({
   path: '/published',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ShippingRoute = ShippingRouteImport.update({
   id: '/shipping',
   path: '/shipping',
@@ -131,6 +118,11 @@ const ApiChatAiRoute = ApiChatAiRouteImport.update({
 const ApiVisitorRoute = ApiVisitorRouteImport.update({
   id: '/api/visitor',
   path: '/api/visitor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/auth/callback',
+  path: '/auth/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CSlugRoute = CSlugRouteImport.update({
@@ -158,16 +150,6 @@ const SettingsPaymentMethodsRoute = SettingsPaymentMethodsRouteImport.update({
   path: '/settings/payment-methods',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SignupIndexRoute = SignupIndexRouteImport.update({
-  id: '/signup/',
-  path: '/signup/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SignupVerifyRoute = SignupVerifyRouteImport.update({
-  id: '/signup/verify',
-  path: '/signup/verify',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const CSlugIndexRoute = CSlugIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -185,7 +167,6 @@ export interface FileRoutesByFullPath {
   '/contacts': typeof ContactsRoute
   '/dashboard': typeof DashboardRoute
   '/earnings': typeof EarningsRoute
-  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/manual-entry': typeof ManualEntryRoute
   '/missing-info': typeof MissingInfoRoute
@@ -194,18 +175,16 @@ export interface FileRoutesByFullPath {
   '/policies': typeof PoliciesRoute
   '/products': typeof ProductsRoute
   '/published': typeof PublishedRoute
-  '/reset-password': typeof ResetPasswordRoute
   '/shipping': typeof ShippingRoute
   '/welcome': typeof WelcomeRoute
   '/api/chat-ai': typeof ApiChatAiRoute
   '/api/visitor': typeof ApiVisitorRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/c/$slug': typeof CSlugRouteWithChildren
   '/chat/$slug': typeof ChatSlugRoute
   '/conversation/$id': typeof ConversationIdRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
   '/settings/payment-methods': typeof SettingsPaymentMethodsRoute
-  '/signup/verify': typeof SignupVerifyRoute
-  '/signup/': typeof SignupIndexRoute
   '/c/$slug/account': typeof CSlugAccountRoute
   '/c/$slug/': typeof CSlugIndexRoute
 }
@@ -215,7 +194,6 @@ export interface FileRoutesByTo {
   '/contacts': typeof ContactsRoute
   '/dashboard': typeof DashboardRoute
   '/earnings': typeof EarningsRoute
-  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/manual-entry': typeof ManualEntryRoute
   '/missing-info': typeof MissingInfoRoute
@@ -224,17 +202,15 @@ export interface FileRoutesByTo {
   '/policies': typeof PoliciesRoute
   '/products': typeof ProductsRoute
   '/published': typeof PublishedRoute
-  '/reset-password': typeof ResetPasswordRoute
   '/shipping': typeof ShippingRoute
   '/welcome': typeof WelcomeRoute
   '/api/chat-ai': typeof ApiChatAiRoute
   '/api/visitor': typeof ApiVisitorRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/chat/$slug': typeof ChatSlugRoute
   '/conversation/$id': typeof ConversationIdRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
   '/settings/payment-methods': typeof SettingsPaymentMethodsRoute
-  '/signup/verify': typeof SignupVerifyRoute
-  '/signup': typeof SignupIndexRoute
   '/c/$slug/account': typeof CSlugAccountRoute
   '/c/$slug': typeof CSlugIndexRoute
 }
@@ -245,7 +221,6 @@ export interface FileRoutesById {
   '/contacts': typeof ContactsRoute
   '/dashboard': typeof DashboardRoute
   '/earnings': typeof EarningsRoute
-  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/manual-entry': typeof ManualEntryRoute
   '/missing-info': typeof MissingInfoRoute
@@ -254,18 +229,16 @@ export interface FileRoutesById {
   '/policies': typeof PoliciesRoute
   '/products': typeof ProductsRoute
   '/published': typeof PublishedRoute
-  '/reset-password': typeof ResetPasswordRoute
   '/shipping': typeof ShippingRoute
   '/welcome': typeof WelcomeRoute
   '/api/chat-ai': typeof ApiChatAiRoute
   '/api/visitor': typeof ApiVisitorRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/c/$slug': typeof CSlugRouteWithChildren
   '/chat/$slug': typeof ChatSlugRoute
   '/conversation/$id': typeof ConversationIdRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
   '/settings/payment-methods': typeof SettingsPaymentMethodsRoute
-  '/signup/verify': typeof SignupVerifyRoute
-  '/signup/': typeof SignupIndexRoute
   '/c/$slug/account': typeof CSlugAccountRoute
   '/c/$slug/': typeof CSlugIndexRoute
 }
@@ -277,7 +250,6 @@ export interface FileRouteTypes {
     | '/contacts'
     | '/dashboard'
     | '/earnings'
-    | '/forgot-password'
     | '/login'
     | '/manual-entry'
     | '/missing-info'
@@ -286,18 +258,16 @@ export interface FileRouteTypes {
     | '/policies'
     | '/products'
     | '/published'
-    | '/reset-password'
     | '/shipping'
     | '/welcome'
     | '/api/chat-ai'
     | '/api/visitor'
+    | '/auth/callback'
     | '/c/$slug'
     | '/chat/$slug'
     | '/conversation/$id'
     | '/settings/notifications'
     | '/settings/payment-methods'
-    | '/signup/verify'
-    | '/signup/'
     | '/c/$slug/account'
     | '/c/$slug/'
   fileRoutesByTo: FileRoutesByTo
@@ -307,7 +277,6 @@ export interface FileRouteTypes {
     | '/contacts'
     | '/dashboard'
     | '/earnings'
-    | '/forgot-password'
     | '/login'
     | '/manual-entry'
     | '/missing-info'
@@ -316,17 +285,15 @@ export interface FileRouteTypes {
     | '/policies'
     | '/products'
     | '/published'
-    | '/reset-password'
     | '/shipping'
     | '/welcome'
     | '/api/chat-ai'
     | '/api/visitor'
+    | '/auth/callback'
     | '/chat/$slug'
     | '/conversation/$id'
     | '/settings/notifications'
     | '/settings/payment-methods'
-    | '/signup/verify'
-    | '/signup'
     | '/c/$slug/account'
     | '/c/$slug'
   id:
@@ -336,7 +303,6 @@ export interface FileRouteTypes {
     | '/contacts'
     | '/dashboard'
     | '/earnings'
-    | '/forgot-password'
     | '/login'
     | '/manual-entry'
     | '/missing-info'
@@ -345,18 +311,16 @@ export interface FileRouteTypes {
     | '/policies'
     | '/products'
     | '/published'
-    | '/reset-password'
     | '/shipping'
     | '/welcome'
     | '/api/chat-ai'
     | '/api/visitor'
+    | '/auth/callback'
     | '/c/$slug'
     | '/chat/$slug'
     | '/conversation/$id'
     | '/settings/notifications'
     | '/settings/payment-methods'
-    | '/signup/verify'
-    | '/signup/'
     | '/c/$slug/account'
     | '/c/$slug/'
   fileRoutesById: FileRoutesById
@@ -367,7 +331,6 @@ export interface RootRouteChildren {
   ContactsRoute: typeof ContactsRoute
   DashboardRoute: typeof DashboardRoute
   EarningsRoute: typeof EarningsRoute
-  ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
   ManualEntryRoute: typeof ManualEntryRoute
   MissingInfoRoute: typeof MissingInfoRoute
@@ -376,18 +339,16 @@ export interface RootRouteChildren {
   PoliciesRoute: typeof PoliciesRoute
   ProductsRoute: typeof ProductsRoute
   PublishedRoute: typeof PublishedRoute
-  ResetPasswordRoute: typeof ResetPasswordRoute
   ShippingRoute: typeof ShippingRoute
   WelcomeRoute: typeof WelcomeRoute
   ApiChatAiRoute: typeof ApiChatAiRoute
   ApiVisitorRoute: typeof ApiVisitorRoute
+  AuthCallbackRoute: typeof AuthCallbackRoute
   CSlugRoute: typeof CSlugRouteWithChildren
   ChatSlugRoute: typeof ChatSlugRoute
   ConversationIdRoute: typeof ConversationIdRoute
   SettingsNotificationsRoute: typeof SettingsNotificationsRoute
   SettingsPaymentMethodsRoute: typeof SettingsPaymentMethodsRoute
-  SignupVerifyRoute: typeof SignupVerifyRoute
-  SignupIndexRoute: typeof SignupIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -425,13 +386,6 @@ declare module '@tanstack/react-router' {
       path: '/earnings'
       fullPath: '/earnings'
       preLoaderRoute: typeof EarningsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/forgot-password': {
-      id: '/forgot-password'
-      path: '/forgot-password'
-      fullPath: '/forgot-password'
-      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -490,13 +444,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublishedRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/shipping': {
       id: '/shipping'
       path: '/shipping'
@@ -523,6 +470,13 @@ declare module '@tanstack/react-router' {
       path: '/api/visitor'
       fullPath: '/api/visitor'
       preLoaderRoute: typeof ApiVisitorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/auth/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/c/$slug': {
@@ -560,20 +514,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsPaymentMethodsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/signup/': {
-      id: '/signup/'
-      path: '/signup'
-      fullPath: '/signup/'
-      preLoaderRoute: typeof SignupIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/signup/verify': {
-      id: '/signup/verify'
-      path: '/signup/verify'
-      fullPath: '/signup/verify'
-      preLoaderRoute: typeof SignupVerifyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/c/$slug/': {
       id: '/c/$slug/'
       path: '/'
@@ -609,7 +549,6 @@ const rootRouteChildren: RootRouteChildren = {
   ContactsRoute: ContactsRoute,
   DashboardRoute: DashboardRoute,
   EarningsRoute: EarningsRoute,
-  ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
   ManualEntryRoute: ManualEntryRoute,
   MissingInfoRoute: MissingInfoRoute,
@@ -618,18 +557,16 @@ const rootRouteChildren: RootRouteChildren = {
   PoliciesRoute: PoliciesRoute,
   ProductsRoute: ProductsRoute,
   PublishedRoute: PublishedRoute,
-  ResetPasswordRoute: ResetPasswordRoute,
   ShippingRoute: ShippingRoute,
   WelcomeRoute: WelcomeRoute,
   ApiChatAiRoute: ApiChatAiRoute,
   ApiVisitorRoute: ApiVisitorRoute,
+  AuthCallbackRoute: AuthCallbackRoute,
   CSlugRoute: CSlugRouteWithChildren,
   ChatSlugRoute: ChatSlugRoute,
   ConversationIdRoute: ConversationIdRoute,
   SettingsNotificationsRoute: SettingsNotificationsRoute,
   SettingsPaymentMethodsRoute: SettingsPaymentMethodsRoute,
-  SignupVerifyRoute: SignupVerifyRoute,
-  SignupIndexRoute: SignupIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

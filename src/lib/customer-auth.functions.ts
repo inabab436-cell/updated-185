@@ -1,66 +1,12 @@
 /**
- * Public server functions for the storefront customer OTP login system.
+ * Public server functions for the storefront customer session.
  *
- * These are the ONLY endpoints the storefront/chat UI uses for customer
- * authentication. They never touch the merchant auth system.
+ * Customer sign-in itself happens through Google (see
+ * `@/lib/google-auth.functions`); these endpoints only read and end sessions.
  */
 import { createServerFn } from "@tanstack/react-start";
 
-import type {
-  CustomerOtpSendResult,
-  CustomerOtpVerifyResult,
-  CustomerSessionInfo,
-} from "@/lib/customer-auth-types";
-
-function ensureUuid(value: unknown, label: string): string {
-  const s = String(value ?? "").trim();
-  if (!/^[0-9a-f-]{16,}$/i.test(s)) {
-    throw new Error(`${label} غير صالح.`);
-  }
-  return s;
-}
-function ensureEmail(value: unknown): string {
-  const s = String(value ?? "").trim().toLowerCase();
-  if (!s.includes("@") || s.length > 200) throw new Error("يرجى إدخال بريد إلكتروني صالح.");
-  return s;
-}
-function ensureCode(value: unknown): string {
-  const s = String(value ?? "").trim();
-  if (!/^\d{6}$/.test(s)) throw new Error("الرمز يجب أن يتكوّن من ٦ أرقام.");
-  return s;
-}
-
-export const requestCustomerOtp = createServerFn({ method: "POST" })
-  .inputValidator((data: { merchant_id: string; email: string }) => ({
-    merchant_id: ensureUuid(data?.merchant_id, "merchant_id"),
-    email: ensureEmail(data?.email),
-  }))
-  .handler(async ({ data }): Promise<CustomerOtpSendResult> => {
-    const { sendCustomerOtp } = await import("@/lib/customer-auth.server");
-    return sendCustomerOtp(data.merchant_id, data.email);
-  });
-
-export const verifyCustomerOtp = createServerFn({ method: "POST" })
-  .inputValidator((data: {
-    merchant_id: string;
-    email: string;
-    code: string;
-    visitor_id?: string | null;
-  }) => ({
-    merchant_id: ensureUuid(data?.merchant_id, "merchant_id"),
-    email: ensureEmail(data?.email),
-    code: ensureCode(data?.code),
-    visitor_id: data?.visitor_id ? String(data.visitor_id) : null,
-  }))
-  .handler(async ({ data }): Promise<CustomerOtpVerifyResult> => {
-    const { verifyCustomerOtpAndLogin } = await import("@/lib/customer-auth.server");
-    return verifyCustomerOtpAndLogin(
-      data.merchant_id,
-      data.email,
-      data.code,
-      data.visitor_id,
-    );
-  });
+import type { CustomerSessionInfo } from "@/lib/customer-auth-types";
 
 export const getCustomerSession = createServerFn({ method: "GET" }).handler(
   async (): Promise<CustomerSessionInfo> => {

@@ -114,6 +114,8 @@ function ManualEntryPage() {
           </Button>
         </div>
       </SurfaceCard>
+
+      <SavedKnowledgeList />
     </PageShell>
   );
 }

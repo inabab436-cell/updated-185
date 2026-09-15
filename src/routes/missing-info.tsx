@@ -73,12 +73,20 @@ function MissingInfoPage() {
             <img src={logo.url} alt="cupai" className="h-8 w-8 rounded-lg shadow-card" />
             <span className="text-sm font-semibold tracking-tight">cupai</span>
           </Link>
-          <Button asChild variant="ghost" size="sm">
-            <Link to="/dashboard">
-              <ArrowLeft className="ml-1 h-4 w-4" />
-              لوحة التحكم
-            </Link>
-          </Button>
+          <div className="flex items-center gap-1">
+            <Button asChild variant="outline" size="sm" className="gap-1">
+              <Link to="/manual-entry">
+                <Sparkles className="h-3.5 w-3.5" />
+                المعلومات المحفوظة
+              </Link>
+            </Button>
+            <Button asChild variant="ghost" size="sm">
+              <Link to="/dashboard">
+                <ArrowLeft className="ml-1 h-4 w-4" />
+                لوحة التحكم
+              </Link>
+            </Button>
+          </div>
         </div>
       </header>
 

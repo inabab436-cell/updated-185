@@ -8,6 +8,7 @@ import { Sparkles, Loader2, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageShell, PageHero, SurfaceCard } from "@/components/layout/page-shell";
 import { submitManualEntry } from "@/lib/manual-entry.functions";
+import { SavedKnowledgeList } from "@/components/knowledge/saved-knowledge-list";
 
 const searchSchema = z.object({
   n: z.string().uuid().optional(),
@@ -48,9 +49,12 @@ function ManualEntryPage() {
       toast.success("تم حفظ المعلومة في قاعدة المعرفة.");
       setText("");
       qc.invalidateQueries({ queryKey: ["notifications"] });
+      qc.invalidateQueries({ queryKey: ["knowledge-base"] });
+      qc.invalidateQueries({ queryKey: ["missing-info-topics"] });
       if (res.resolvedNotificationId) {
-        // Return to the dashboard where the notification is now resolved.
-        void navigate({ to: "/dashboard" });
+        // Return to the missing-information page, where the topic now shows
+        // the exact information that was added.
+        void navigate({ to: "/missing-info" });
       }
     },
     onError: (e: any) => toast.error(e?.message || "تعذر حفظ المعلومة."),

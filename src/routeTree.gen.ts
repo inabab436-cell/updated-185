@@ -14,6 +14,7 @@ import { Route as AwaitingPaymentRouteImport } from './routes/awaiting-payment'
 import { Route as ContactsRouteImport } from './routes/contacts'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as EarningsRouteImport } from './routes/earnings'
+import { Route as JoinRouteImport } from './routes/join'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ManualEntryRouteImport } from './routes/manual-entry'
 import { Route as MissingInfoRouteImport } from './routes/missing-info'
@@ -58,6 +59,11 @@ const DashboardRoute = DashboardRouteImport.update({
 const EarningsRoute = EarningsRouteImport.update({
   id: '/earnings',
   path: '/earnings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JoinRoute = JoinRouteImport.update({
+  id: '/join',
+  path: '/join',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -167,6 +173,7 @@ export interface FileRoutesByFullPath {
   '/contacts': typeof ContactsRoute
   '/dashboard': typeof DashboardRoute
   '/earnings': typeof EarningsRoute
+  '/join': typeof JoinRoute
   '/login': typeof LoginRoute
   '/manual-entry': typeof ManualEntryRoute
   '/missing-info': typeof MissingInfoRoute
@@ -194,6 +201,7 @@ export interface FileRoutesByTo {
   '/contacts': typeof ContactsRoute
   '/dashboard': typeof DashboardRoute
   '/earnings': typeof EarningsRoute
+  '/join': typeof JoinRoute
   '/login': typeof LoginRoute
   '/manual-entry': typeof ManualEntryRoute
   '/missing-info': typeof MissingInfoRoute
@@ -221,6 +229,7 @@ export interface FileRoutesById {
   '/contacts': typeof ContactsRoute
   '/dashboard': typeof DashboardRoute
   '/earnings': typeof EarningsRoute
+  '/join': typeof JoinRoute
   '/login': typeof LoginRoute
   '/manual-entry': typeof ManualEntryRoute
   '/missing-info': typeof MissingInfoRoute
@@ -250,6 +259,7 @@ export interface FileRouteTypes {
     | '/contacts'
     | '/dashboard'
     | '/earnings'
+    | '/join'
     | '/login'
     | '/manual-entry'
     | '/missing-info'
@@ -277,6 +287,7 @@ export interface FileRouteTypes {
     | '/contacts'
     | '/dashboard'
     | '/earnings'
+    | '/join'
     | '/login'
     | '/manual-entry'
     | '/missing-info'
@@ -303,6 +314,7 @@ export interface FileRouteTypes {
     | '/contacts'
     | '/dashboard'
     | '/earnings'
+    | '/join'
     | '/login'
     | '/manual-entry'
     | '/missing-info'
@@ -331,6 +343,7 @@ export interface RootRouteChildren {
   ContactsRoute: typeof ContactsRoute
   DashboardRoute: typeof DashboardRoute
   EarningsRoute: typeof EarningsRoute
+  JoinRoute: typeof JoinRoute
   LoginRoute: typeof LoginRoute
   ManualEntryRoute: typeof ManualEntryRoute
   MissingInfoRoute: typeof MissingInfoRoute
@@ -386,6 +399,13 @@ declare module '@tanstack/react-router' {
       path: '/earnings'
       fullPath: '/earnings'
       preLoaderRoute: typeof EarningsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/join': {
+      id: '/join'
+      path: '/join'
+      fullPath: '/join'
+      preLoaderRoute: typeof JoinRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -549,6 +569,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactsRoute: ContactsRoute,
   DashboardRoute: DashboardRoute,
   EarningsRoute: EarningsRoute,
+  JoinRoute: JoinRoute,
   LoginRoute: LoginRoute,
   ManualEntryRoute: ManualEntryRoute,
   MissingInfoRoute: MissingInfoRoute,

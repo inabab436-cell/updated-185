@@ -3,14 +3,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import {
   ArrowLeft,
-  Bot,
-  Boxes,
   Check,
   CircleCheck,
-  Image,
+  Clock3,
+  PackageCheck,
   MessagesSquare,
   Sparkles,
-  Tag,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -64,35 +62,57 @@ function useCountUp(target: number) {
 const FEATURES = [
   {
     icon: MessagesSquare,
-    title: "محادثة تتحول إلى طلب",
-    body: "يرد الوكيل فورًا، يفهم احتياج العميل، ويكمل الطلب حتى تأكيد الدفع.",
+    title: "يبيع من داخل المحادثة",
+    body: "يفهم احتياج العميل، يرشّح المنتج المناسب، ويكمل الطلب حتى التأكيد.",
   },
   {
-    icon: Image,
-    title: "يفهم الصور والمنتجات",
-    body: "يطابق الصور مع منتجاتك ويعرف المقاسات والألوان المتاحة في اللحظة نفسها.",
-  },
-  {
-    icon: Boxes,
-    title: "مخزون دقيق دائمًا",
-    body: "يُحدّث الكميات مع الطلبات المؤكدة حتى لا يُباع منتج غير متوفر.",
-  },
-  {
-    icon: Tag,
-    title: "عروض تُطبّق تلقائيًا",
-    body: "يحسب الخصومات وحدود الاستخدام داخل المحادثة دون تدخل يدوي.",
-  },
-  {
-    icon: Bot,
-    title: "يتعلم ما ينقصه",
-    body: "ينبّهك للمعلومة الناقصة، ثم يستخدمها لاحقًا في ردوده للعملاء.",
+    icon: PackageCheck,
+    title: "متصل بمنتجاتك ومخزونك",
+    body: "يعرف المقاسات والألوان المتاحة ويحدّث الكميات مع الطلبات المؤكدة.",
   },
   {
     icon: Sparkles,
-    title: "متجرك جاهز للمشاركة",
-    body: "رابط خاص لمنتجاتك وتجربة دخول سريعة للعملاء باستخدام Google.",
+    title: "يتعلم تفاصيل عملك",
+    body: "ينبّهك للمعلومات الناقصة ويحفظها ليقدّم إجابات أدق في المرات القادمة.",
   },
 ];
+
+const LAUNCH_STORAGE_KEY = "cupai-launch-at";
+const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
+
+function useLaunchCountdown() {
+  const [remaining, setRemaining] = useState(THREE_DAYS_MS);
+
+  useEffect(() => {
+    const stored = window.localStorage.getItem(LAUNCH_STORAGE_KEY);
+    const parsed = stored ? Number(stored) : Number.NaN;
+    const launchAt = Number.isFinite(parsed) && parsed > Date.now()
+      ? parsed
+      : Date.now() + THREE_DAYS_MS;
+
+    window.localStorage.setItem(LAUNCH_STORAGE_KEY, String(launchAt));
+
+    const update = () => setRemaining(Math.max(0, launchAt - Date.now()));
+    update();
+    const timer = window.setInterval(update, 1000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  const totalSeconds = Math.floor(remaining / 1000);
+  return {
+    days: Math.floor(totalSeconds / 86400),
+    hours: Math.floor((totalSeconds % 86400) / 3600),
+    minutes: Math.floor((totalSeconds % 3600) / 60),
+    seconds: totalSeconds % 60,
+  };
+}
+
+const COUNTDOWN_LABELS = [
+  ["days", "يوم"],
+  ["hours", "ساعة"],
+  ["minutes", "دقيقة"],
+  ["seconds", "ثانية"],
+] as const;
 
 function JoinPage() {
   const fetchStats = useServerFn(getWaitlistStats);
@@ -104,6 +124,7 @@ function JoinPage() {
   const [submitting, setSubmitting] = useState(false);
   const [position, setPosition] = useState<number | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const countdown = useLaunchCountdown();
 
   useEffect(() => {
     let active = true;
@@ -146,52 +167,70 @@ function JoinPage() {
 
   return (
     <div dir="rtl" className="join-page relative min-h-screen overflow-hidden bg-background text-foreground">
-      <div className="join-grid pointer-events-none absolute inset-0" aria-hidden />
-      <div className="join-glow pointer-events-none absolute -left-48 -top-52 h-[34rem] w-[34rem] rounded-full" aria-hidden />
+      <div className="join-wash pointer-events-none absolute inset-x-0 top-0 h-[38rem]" aria-hidden />
 
       <header className="relative mx-auto flex max-w-6xl items-center justify-between px-5 py-5 sm:px-8 sm:py-7">
         <div className="flex items-center gap-3" dir="ltr">
-          <img src={logoAsset.url} alt="CUPAI" className="h-11 w-11 rounded-xl object-contain" />
-          <span className="join-latin text-xl font-bold">CUPAI</span>
+          <img src={logoAsset.url} alt="CUPAI" className="h-12 w-12 rounded-xl bg-card object-contain p-1 shadow-card" />
+          <span className="join-latin text-xl font-bold text-foreground">CUPAI</span>
         </div>
-        <span className="join-status inline-flex items-center gap-2 rounded-full border border-border px-3 py-1.5 text-xs text-muted-foreground">
-          <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-          التسجيل المبكر مفتوح
+        <span className="join-status inline-flex items-center gap-2 rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-muted-foreground shadow-card">
+          <span className="join-pulse h-2 w-2 rounded-full bg-brand-teal" />
+          التسجيل مفتوح الآن
         </span>
       </header>
 
-      <main className="relative mx-auto max-w-6xl px-5 pb-20 pt-7 sm:px-8 sm:pt-14">
-        <section className="grid items-center gap-12 lg:grid-cols-[1.08fr_0.92fr] lg:gap-20">
+      <main className="relative mx-auto max-w-6xl px-5 pb-16 pt-7 sm:px-8 sm:pt-12">
+        <section className="grid items-center gap-10 lg:grid-cols-[1.08fr_0.92fr] lg:gap-16">
           <div className="join-reveal max-w-2xl">
-            <div className="mb-6 flex items-center gap-3 text-xs font-semibold text-primary">
-              <span className="h-px w-10 bg-primary" />
-              لأول 100 مشترك فقط
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-accent px-3.5 py-2 text-xs font-bold text-accent-foreground">
+              <Clock3 className="size-3.5" />
+              الإطلاق خلال 3 أيام
             </div>
-            <h1 className="text-balance text-[2.65rem] font-bold leading-[1.16] sm:text-6xl lg:text-[4.5rem]">
-              مستعد تبدأ البيع
-              <span className="mt-1 block text-primary">بشكل أذكى؟</span>
+            <h1 className="text-balance text-[2.55rem] font-black leading-[1.22] sm:text-6xl lg:text-[4.25rem]">
+              كن من أوائل من يبيعون
+              <span className="mt-1 block text-gradient-brand">بمساعدة وكيل ذكي</span>
             </h1>
             <p className="mt-6 max-w-xl text-pretty text-base leading-8 text-muted-foreground sm:text-lg">
-              انضم إلى الدفعة الأولى من CUPAI واحصل على خصم المؤسسين عند الإطلاق.
-              بريدك الإلكتروني فقط — لا بطاقة ولا خطوات إضافية.
+              نطلق CUPAI قريبًا. احجز مكانك الآن بين أول 100 مشترك لتحصل على أولوية الوصول وخصم المؤسسين.
             </p>
-            <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-sm text-muted-foreground">
-              <span className="flex items-center gap-2"><CircleCheck className="text-primary" /> بدون التزام</span>
-              <span className="flex items-center gap-2"><CircleCheck className="text-primary" /> أولوية الوصول</span>
-              <span className="flex items-center gap-2"><CircleCheck className="text-primary" /> خصم خاص</span>
+
+            <div className="mt-8" aria-label="الوقت المتبقي حتى الإطلاق" dir="ltr">
+              <p className="mb-3 text-right text-xs font-bold text-muted-foreground" dir="rtl">الوقت المتبقي على الإطلاق</p>
+              <div className="grid max-w-lg grid-cols-4 gap-2 sm:gap-3">
+                {COUNTDOWN_LABELS.map(([key, label]) => (
+                  <div key={key} className="join-time-unit rounded-xl border border-border bg-card px-2 py-3 text-center shadow-card sm:py-4">
+                    <strong className="join-latin block text-2xl font-bold tabular-nums text-foreground sm:text-3xl">
+                      {String(countdown[key]).padStart(2, "0")}
+                    </strong>
+                    <span className="mt-1 block text-[10px] font-semibold text-muted-foreground sm:text-xs">{label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-7 flex flex-wrap gap-x-5 gap-y-3 text-sm text-muted-foreground">
+              <span className="flex items-center gap-2"><CircleCheck className="size-4 text-brand-teal" /> بدون دفع الآن</span>
+              <span className="flex items-center gap-2"><CircleCheck className="size-4 text-brand-teal" /> لا تأكيد للبريد</span>
+              <span className="flex items-center gap-2"><CircleCheck className="size-4 text-brand-teal" /> خصم خاص</span>
             </div>
           </div>
 
-          <aside className="join-reveal join-delay rounded-2xl border border-border bg-card p-5 shadow-card sm:p-7">
+          <aside className="join-reveal join-delay rounded-2xl border border-border bg-card p-5 shadow-elegant sm:p-7">
+            <div className="mb-6">
+              <p className="text-xs font-bold text-primary">أول 100 مشترك</p>
+              <h2 className="mt-2 text-2xl font-black">احجز مكانك قبل الإطلاق</h2>
+              <p className="mt-2 text-sm leading-7 text-muted-foreground">خطوة واحدة فقط: أضف بريدك وسنحفظ ترتيبك فورًا.</p>
+            </div>
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-sm text-muted-foreground">المقاعد المحجوزة</p>
+                <p className="text-xs font-semibold text-muted-foreground">تم حجز</p>
                 <div className="join-latin mt-2 flex items-baseline gap-2" dir="ltr">
-                  <strong className="text-6xl font-bold leading-none text-primary tabular-nums">{shown}</strong>
-                  <span className="text-lg text-muted-foreground">/ {WAITLIST_LIMIT}</span>
+                  <strong className="text-5xl font-bold leading-none text-primary tabular-nums">{shown}</strong>
+                  <span className="text-base text-muted-foreground">/ {WAITLIST_LIMIT}</span>
                 </div>
               </div>
-              <span className="rounded-lg bg-secondary px-3 py-2 text-center">
+              <span className="rounded-xl bg-secondary px-4 py-3 text-center">
                 <strong className="join-latin block text-xl leading-none tabular-nums">{remaining}</strong>
                 <span className="mt-1 block text-[10px] text-muted-foreground">متبقي</span>
               </span>
@@ -203,19 +242,17 @@ function JoinPage() {
                 style={{ width: `${Math.max(percent, count > 0 ? 4 : 0)}%` }}
               />
             </div>
-            <p className="mt-3 text-xs leading-6 text-muted-foreground">
-              العدد يتحدث مباشرة مع كل حجز جديد.
-            </p>
+            <p className="mt-3 text-xs leading-6 text-muted-foreground">عداد حقيقي يتحدّث مع كل حجز جديد.</p>
 
             <div className="mt-7 border-t border-border pt-6">
           {step === "intro" && (
             <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
               <Button
                 size="lg"
-                className="h-12 w-full rounded-lg text-base font-bold"
+                className="h-12 w-full rounded-lg bg-gradient-brand text-base font-bold text-primary-foreground shadow-glow hover:opacity-90"
                 onClick={() => setStep("email")}
               >
-                أنا مستعد — احجز مكاني
+                ألحق مكانك قبل الإطلاق
                 <ArrowLeft />
               </Button>
             </div>
@@ -227,7 +264,7 @@ function JoinPage() {
               className="animate-in fade-in slide-in-from-bottom-2 space-y-3 duration-500"
             >
               <label htmlFor="waitlist-email" className="block text-sm font-semibold">
-                أين نرسل لك دعوة الإطلاق؟
+                بريدك الإلكتروني
               </label>
               <Input
                 id="waitlist-email"
@@ -239,13 +276,13 @@ function JoinPage() {
                 placeholder="your@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="h-12 rounded-lg bg-background px-4 text-left text-base"
+                className="h-12 rounded-lg bg-background px-4 text-left text-base shadow-none"
               />
               <Button
                 type="submit"
                 size="lg"
                 disabled={submitting}
-                className="h-12 w-full rounded-lg text-base font-bold"
+                className="h-12 w-full rounded-lg bg-gradient-brand text-base font-bold text-primary-foreground shadow-glow hover:opacity-90"
               >
                 {submitting ? "جارٍ الحجز…" : "تأكيد الحجز"}
               </Button>
@@ -263,7 +300,7 @@ function JoinPage() {
 
           {step === "done" && (
             <div className="animate-in fade-in zoom-in-95 py-2 text-center duration-500">
-              <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-secondary text-primary">
+              <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-accent text-accent-foreground">
                 <Check />
               </div>
               <h2 className="mt-4 text-xl font-bold">مكانك محجوز</h2>
@@ -278,18 +315,17 @@ function JoinPage() {
           </aside>
         </section>
 
-        <section className="mt-24 border-t border-border pt-10 sm:mt-32 sm:pt-14">
-          <div className="max-w-2xl">
-            <p className="text-xs font-semibold text-primary">ما الذي تحصل عليه؟</p>
-            <h2 className="mt-3 text-2xl font-bold sm:text-3xl">أكثر من مجرد ردود تلقائية</h2>
-            <p className="mt-3 leading-7 text-muted-foreground">
-              CUPAI يعمل مع منتجاتك ومخزونك وعروضك ليحوّل المحادثة إلى تجربة بيع كاملة.
-            </p>
+        <section className="mt-20 border-t border-border pt-10 sm:mt-28 sm:pt-14">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="text-xs font-bold text-primary">مصمم للبيع الحقيقي</p>
+            <h2 className="mt-3 text-2xl font-black sm:text-3xl">وكيل يفهم عملك، لا يكتفي بالرد</h2>
           </div>
-          <div className="mt-9 grid gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-9 grid gap-4 sm:grid-cols-3">
             {FEATURES.map(({ icon: Icon, title, body }) => (
-              <article key={title} className="group bg-card p-6 transition-colors hover:bg-secondary">
-                <Icon className="text-primary transition-transform duration-300 group-hover:-translate-y-0.5" />
+              <article key={title} className="join-feature group rounded-xl border border-border bg-card p-6 shadow-card">
+                <span className="grid h-10 w-10 place-items-center rounded-lg bg-accent text-accent-foreground">
+                  <Icon className="size-5 transition-transform duration-300 group-hover:-translate-y-0.5" />
+                </span>
                 <h3 className="mt-5 text-base font-bold">{title}</h3>
                 <p className="mt-2 text-sm leading-7 text-muted-foreground">{body}</p>
               </article>
@@ -297,7 +333,7 @@ function JoinPage() {
           </div>
         </section>
 
-        <footer className="mt-16 flex items-center justify-between border-t border-border py-7 text-xs text-muted-foreground" dir="ltr">
+        <footer className="mt-14 flex items-center justify-between border-t border-border py-7 text-xs text-muted-foreground" dir="ltr">
           <span className="join-latin font-semibold text-foreground">CUPAI</span>
           <span>© 2026</span>
         </footer>

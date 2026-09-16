@@ -77,22 +77,13 @@ const FEATURES = [
   },
 ];
 
-const LAUNCH_STORAGE_KEY = "cupai-launch-at";
-const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
+const LAUNCH_AT = Date.UTC(2026, 8, 19, 6, 21, 0);
 
 function useLaunchCountdown() {
-  const [remaining, setRemaining] = useState(THREE_DAYS_MS);
+  const [remaining, setRemaining] = useState(() => Math.max(0, LAUNCH_AT - Date.now()));
 
   useEffect(() => {
-    const stored = window.localStorage.getItem(LAUNCH_STORAGE_KEY);
-    const parsed = stored ? Number(stored) : Number.NaN;
-    const launchAt = Number.isFinite(parsed) && parsed > Date.now()
-      ? parsed
-      : Date.now() + THREE_DAYS_MS;
-
-    window.localStorage.setItem(LAUNCH_STORAGE_KEY, String(launchAt));
-
-    const update = () => setRemaining(Math.max(0, launchAt - Date.now()));
+    const update = () => setRemaining(Math.max(0, LAUNCH_AT - Date.now()));
     update();
     const timer = window.setInterval(update, 1000);
     return () => window.clearInterval(timer);

@@ -380,3 +380,86 @@
 .hub-scroll-x::-webkit-scrollbar {
   display: none;
 }
+
+/* CUPAI early-access page — calm, focused dark presentation. */
+.join-page {
+  --background: oklch(0.145 0.012 275);
+  --foreground: oklch(0.97 0.008 260);
+  --card: oklch(0.185 0.014 275);
+  --card-foreground: oklch(0.97 0.008 260);
+  --primary: oklch(0.84 0.11 190);
+  --primary-foreground: oklch(0.15 0.02 250);
+  --secondary: oklch(0.23 0.022 275);
+  --secondary-foreground: oklch(0.95 0.01 260);
+  --muted: oklch(0.225 0.014 275);
+  --muted-foreground: oklch(0.72 0.018 260);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 14%);
+  --ring: oklch(0.84 0.11 190);
+  --shadow-card: 0 24px 80px -48px oklch(0 0 0 / 0.9);
+  font-family: "DM Sans", "Cairo", sans-serif;
+}
+
+.join-page h1,
+.join-page h2,
+.join-page h3 {
+  font-family: "Space Grotesk", "Cairo", sans-serif;
+  letter-spacing: 0;
+}
+
+.join-latin {
+  font-family: "Space Grotesk", sans-serif;
+  letter-spacing: 0;
+}
+
+.join-grid {
+  opacity: 0.18;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: linear-gradient(to bottom, black, transparent 72%);
+}
+
+.join-glow {
+  background: color-mix(in oklab, var(--primary) 11%, transparent);
+  filter: blur(110px);
+  animation: join-breathe 8s ease-in-out infinite alternate;
+}
+
+.join-status {
+  background: color-mix(in oklab, var(--card) 72%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+.join-reveal {
+  animation: join-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.join-delay {
+  animation-delay: 0.12s;
+}
+
+.join-progress {
+  box-shadow: 0 0 18px color-mix(in oklab, var(--primary) 42%, transparent);
+}
+
+@keyframes join-rise {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes join-breathe {
+  from { opacity: 0.65; transform: translate3d(0, 0, 0); }
+  to { opacity: 1; transform: translate3d(28px, 18px, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .join-page *,
+  .join-page *::before,
+  .join-page *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}

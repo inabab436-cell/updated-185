@@ -9,3 +9,4 @@
 - [ ] Remove regex/keyword dependence in payment-confirmation detection -> LLM-driven intent
 - [x] Reorganize dashboard sections, collapsible routed notifications, agent controls, earnings, and quick stock additions
 - [x] Redesign the public waitlist page with a calm, smart, orderly visual direction and CUPAI naming
+- [ ] Align the waitlist page with the main CUPAI design and add a live three-day launch countdown
